@@ -31,3 +31,25 @@ def test_cache_save_load(tmp_path):
         df,
         loaded,
     )
+    
+#---------------------------------------------------------
+#Test preprocessing module
+#---------------------------------------------------------
+from src.data_processing.preprocessing import DataPreprocessor
+
+import pandas as pd
+
+
+def test_remove_duplicates():
+
+    df = pd.DataFrame(
+        {"Close": [1, 2, 3]}
+    )
+
+    df.index = [0, 0, 1]
+
+    processor = DataPreprocessor()
+
+    cleaned = processor.remove_duplicates(df)
+
+    assert len(cleaned) == 2
