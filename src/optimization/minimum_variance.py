@@ -2,12 +2,13 @@
                         minimum_variance.py
 
                         Part of Portfolio Analytics Platform.
-Minimum Variance optimizer.
+Minimum Variance Portfolio Optimizer.
 """
 
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 from scipy.optimize import minimize
 
 from .constraints import Constraints
@@ -15,26 +16,48 @@ from .objective_functions import ObjectiveFunctions
 
 
 class MinimumVarianceOptimizer:
+    """
+    Compute the global minimum variance portfolio.
+    """
 
     def optimize(
         self,
-        covariance,
-    ):
+        covariance: pd.DataFrame,
+    ) -> np.ndarray:
+        """
+        Optimize portfolio weights by minimizing variance.
 
-        n = covariance.shape[0]
+        Parameters
+        ----------
+        covariance : pd.DataFrame
+            Annual covariance matrix.
 
-        initial = np.ones(n) / n
+        Returns
+        -------
+        np.ndarray
+            Optimal portfolio weights.
+        """
+
+        n_assets = covariance.shape[0]
+
+        initial_weights = np.ones(n_assets) / n_assets
 
         result = minimize(
-            ObjectiveFunctions.portfolio_variance,
-            initial,
+            fun=ObjectiveFunctions.portfolio_variance,
+            x0=initial_weights,
             args=(covariance,),
             method="SLSQP",
-            bounds=Constraints.bounds(n),
+            bounds=Constraints.bounds(n_assets),
             constraints=Constraints.weight_sum(),
         )
 
         if not result.success:
-            raise RuntimeError(result.message)
+            raise RuntimeError(
+                f"Optimization failed: {result.message}"
+            )
 
-        return result.x
+        weights = result.x
+
+        weights /= weights.sum()
+
+        return weights

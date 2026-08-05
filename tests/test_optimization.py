@@ -8,41 +8,73 @@ import pandas as pd
 
 from src.optimization import (
     EqualWeightOptimizer,
+    MarkowitzOptimizer,
+    MaximumSharpeOptimizer,
     MinimumVarianceOptimizer,
+    OptimizerFactory,
 )
 
+def sample_data():
 
-def sample_covariance():
+    expected_returns = pd.Series(
+        [0.15, 0.10, 0.20]
+    )
 
-    return pd.DataFrame(
+    covariance = pd.DataFrame(
         [
-            [0.10, 0.02],
-            [0.02, 0.08],
+            [0.040, 0.006, 0.004],
+            [0.006, 0.090, 0.008],
+            [0.004, 0.008, 0.160],
         ]
     )
+
+    return expected_returns, covariance
 
 
 def test_equal_weight():
 
-    optimizer = EqualWeightOptimizer()
+    weights = EqualWeightOptimizer().optimize(3)
 
-    weights = optimizer.optimize(2)
-
-    assert np.isclose(
-        weights.sum(),
-        1.0,
-    )
+    assert np.isclose(weights.sum(), 1.0)
 
 
 def test_minimum_variance():
 
-    optimizer = MinimumVarianceOptimizer()
+    _, cov = sample_data()
 
-    weights = optimizer.optimize(
-        sample_covariance()
+    weights = MinimumVarianceOptimizer().optimize(cov)
+
+    assert np.isclose(weights.sum(), 1.0)
+
+
+def test_maximum_sharpe():
+
+    expected, cov = sample_data()
+
+    weights = MaximumSharpeOptimizer().optimize(
+        expected,
+        cov,
     )
 
-    assert np.isclose(
-        weights.sum(),
-        1.0,
+    assert np.isclose(weights.sum(), 1.0)
+
+
+def test_markowitz():
+
+    expected, cov = sample_data()
+
+    weights = MarkowitzOptimizer().optimize(
+        expected,
+        cov,
     )
+
+    assert np.isclose(weights.sum(), 1.0)
+
+
+def test_factory():
+
+    optimizer = OptimizerFactory.create(
+        "markowitz"
+    )
+
+    assert optimizer is not None
