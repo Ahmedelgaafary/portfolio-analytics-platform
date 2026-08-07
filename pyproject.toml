@@ -1,0 +1,55 @@
+
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "portfolio-analytics-platform"
+version = "1.0.0"
+description = "A Python platform for portfolio analytics, optimization, machine learning, risk analysis, and backtesting."
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "scikit-learn>=1.5",
+    "xgboost>=2.1",
+    "yfinance>=0.2",
+    "pyarrow>=16.0",
+    "matplotlib>=3.9",
+    "openpyxl>=3.1",
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+python_files = [
+    "test_*.py",
+]
+
+python_classes = [
+    "Test*",
+]
+
+python_functions = [
+    "test_*",
+]
