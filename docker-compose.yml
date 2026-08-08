@@ -1,0 +1,24 @@
+services:
+
+  portfolio-analytics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: portfolio-analytics-platform
+
+    environment:
+      PYTHONUNBUFFERED: "1"
+
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+
+    command:
+      [
+        "python",
+        "-m",
+        "src.app"
+      ]
