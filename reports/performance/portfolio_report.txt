@@ -1,11 +1,11 @@
 Portfolio Analytics Report
 ========================================
 
-annual_return: 0.2927730547722802
-annual_volatility: 0.27759958896213166
-cumulative_return: 5.010157396934589
-sharpe_ratio: 0.9923722318764682
-sortino_ratio: 1.3464921616272414
-maximum_drawdown: -0.3175792773206823
-value_at_risk: -0.026833867761192648
-conditional_value_at_risk: -0.04004147251800776
+annual_return: 0.29277301568398273
+annual_volatility: 0.27759955919226564
+cumulative_return: 5.010156127756994
+sharpe_ratio: 0.992372197142186
+sortino_ratio: 1.346492181223817
+maximum_drawdown: -0.3175793129929648
+value_at_risk: -0.026834107052696836
+conditional_value_at_risk: -0.04004145182226038
