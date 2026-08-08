@@ -81,7 +81,7 @@ class MarketDataDownloader:
         start: str,
         end: str,
         interval: str = "1d",
-        use_cache: bool = True,
+        use_cache: bool = False,
     ) -> pd.DataFrame:
         """
         Download historical price data for a single asset.
@@ -109,7 +109,7 @@ class MarketDataDownloader:
                 auto_adjust=self.auto_adjust,
                 progress=False,
             )
-
+            
             if df.empty:
                 raise ValueError(
                     f"No data returned for ticker '{ticker}'."
@@ -150,11 +150,12 @@ class MarketDataDownloader:
         start: str,
         end: str,
         interval: str = "1d",
-        use_cache: bool = True,
-    ) -> dict[str, pd.DataFrame]:
+        use_cache: bool = False,
+    ) -> pd.DataFrame:
         """
-        Download historical market data for multiple assets.
+        Download historical closing prices for multiple assets.
         """
+
         tickers = self.validate_tickers(tickers)
 
         data = {}
@@ -163,7 +164,7 @@ class MarketDataDownloader:
 
             try:
 
-                data[ticker] = self.download(
+                prices = self.download(
                     ticker=ticker,
                     start=start,
                     end=end,
@@ -171,11 +172,32 @@ class MarketDataDownloader:
                     use_cache=use_cache,
                 )
 
-            except Exception:
+                print(
+                    ticker,
+                    type(prices),
+                    prices.shape,
+                )
+                close = prices["Close"]
+
+                if isinstance(close, pd.DataFrame):
+                    close = close.iloc[:, 0]
+
+                data[ticker] = close
+
+            except Exception as error:
 
                 logger.warning(
-                    "Skipping ticker %s",
+                    "Skipping ticker %s: %s",
                     ticker,
+                    error,
                 )
 
-        return data    
+        
+        for ticker, values in data.items():
+
+            print(
+                ticker,
+                type(values),
+            )
+
+        return pd.DataFrame(data)

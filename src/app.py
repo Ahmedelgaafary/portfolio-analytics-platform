@@ -195,7 +195,7 @@ def main() -> None:
         end=config.DEFAULT_END_DATE,
         interval=config.DEFAULT_INTERVAL,
     )
-
+    
     Validator.validate_dataframe(
         prices
     )
